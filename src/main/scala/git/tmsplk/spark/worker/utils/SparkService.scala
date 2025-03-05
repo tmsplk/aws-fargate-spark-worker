@@ -1,5 +1,8 @@
 package git.tmsplk.spark.worker.utils
 
+import git.tmsplk.spark.worker.model.DataFormat
+import git.tmsplk.spark.worker.model.DataFormat.DataFormat
+import git.tmsplk.spark.worker.model.JobContext.JobContext
 import grizzled.slf4j.Logging
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import software.amazon.awssdk.auth.credentials.{AwsCredentials, AwsSessionCredentials}
@@ -7,7 +10,7 @@ import software.amazon.awssdk.services.s3.S3Client
 
 object SparkService extends Logging {
 
-  def initializeSpark(jobContext: JobContext,ecsTaskDefinition: String)(implicit awsCredentials: AwsCredentials): SparkSession = {
+  def initializeSpark(jobContext: JobContext, ecsTaskDefinition: String)(implicit awsCredentials: AwsCredentials): SparkSession = {
 
     val defaultSparkCpu = "4096"
     val defaultSparkRam = "30720"
@@ -23,7 +26,6 @@ object SparkService extends Logging {
       .config("spark.sql.sources.partitionColumnTypeInference.enabled", "false") // pass integer partitions to output as they are
       .config("spark.sql.sources.partitionOverwriteMode", "dynamic") // overwrite just recomputed partitions
       .config("spark.hadoop.native.lib", "false") // ignore missing hadoop libs
-      .config("spark.sql.legacy.timeParserPolicy", "LEGACY") // set datetime representation to support inconsistent grepsr format
 
     val spark = sparkBuilder.getOrCreate()
 
@@ -56,15 +58,14 @@ object SparkService extends Logging {
     spark
   }
 
-  def readDataFromS3(basePath: String, inputPathEncoded: String, dataFormat: DataFormat)
+  def readDataFromS3(basePath: String, inputPath: String, dataFormat: DataFormat)
                     (implicit s3client: S3Client, spark: SparkSession): DataFrame = {
 
-    def readData(path: String): DataFrame = {
       dataFormat match {
         case DataFormat.Parquet =>
           spark.read
             .option("basePath", basePath)
-            .parquet(path)
+            .parquet(inputPath)
 
         case DataFormat.CSV =>
           spark.read
@@ -72,7 +73,7 @@ object SparkService extends Logging {
             .option("header", "true")
             .option("delimiter", ",")
             .option("multiLine", "true")
-            .csv(path)
+            .csv(inputPath)
 
         case DataFormat.TSV =>
           spark.read
@@ -81,10 +82,10 @@ object SparkService extends Logging {
             .option("sep", "\t")
             .option("quote", "\"")
             .option("multiLine", "true")
-            .csv(path)
+            .csv(inputPath)
 
         case _ =>
           throw new IllegalArgumentException(s"Unsupported data type: $dataFormat")
       }
-    }
+  }
 }
