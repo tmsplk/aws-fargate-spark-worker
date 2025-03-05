@@ -34,7 +34,7 @@ lazy val root = (project in file("."))
       case PathList("META-INF", _*) => MergeStrategy.discard
       case _ => MergeStrategy.first
     },
-    assembly / mainClass := Some("git.tmsplk.aws-fargate-spark-worker.Main"),
+    assembly / mainClass := Some("git.tmsplk.spark.worker.Main"),
     assembly / javaOptions ++= Seq(
       "-Dfile.encoding=UTF-8"
     )
