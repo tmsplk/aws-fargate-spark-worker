@@ -4,6 +4,7 @@ import git.tmsplk.spark.worker.aws.{CredentialsProvider, S3Connector}
 import git.tmsplk.spark.worker.model._
 import git.tmsplk.spark.worker.services.JobService
 import git.tmsplk.spark.worker.utils.{ArgumentsParser, SparkService}
+
 import grizzled.slf4j.Logging
 import org.apache.spark.sql.SparkSession
 import software.amazon.awssdk.auth.credentials.AwsCredentials
