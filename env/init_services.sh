@@ -9,6 +9,14 @@ sleep 5  # Give some time for the services to initialize
 echo "Creating S3 bucket in LocalStack..."
 aws --endpoint-url=http://localhost:4566 s3 mb s3://my-bucket
 
+echo "Creating SQS Queue in LocalStack..."
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name my-queue
+
+# AWS Secrets Manager Setup
+echo "Creating secrets in AWS Secrets Manager (LocalStack)..."
+aws --endpoint-url=http://localhost:4566 secretsmanager create-secret --name postgres-credentials --secret-string '{"username":"admin","password":"admin"}'
+aws --endpoint-url=http://localhost:4566 secretsmanager create-secret --name mongodb-uri --secret-string '{"uri":"mongodb://localhost:27017"}'
+
 echo "Initializing MongoDB..."
 docker exec -it mongodb mongosh --eval '
 use testdb;
