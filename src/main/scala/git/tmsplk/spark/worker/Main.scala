@@ -1,14 +1,14 @@
 package git.tmsplk.spark.worker
 
-import git.tmsplk.spark.worker.aws.{CredentialsProvider, S3Connector}
+import git.tmsplk.spark.worker.aws.{CredentialsProvider, S3Connector, SqsConnector}
 import git.tmsplk.spark.worker.model._
 import git.tmsplk.spark.worker.services.JobService
 import git.tmsplk.spark.worker.utils.{ArgumentsParser, SparkService}
-
 import grizzled.slf4j.Logging
 import org.apache.spark.sql.SparkSession
 import software.amazon.awssdk.auth.credentials.AwsCredentials
 import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.sqs.SqsClient
 
 object Main extends App with Logging {
 
@@ -19,6 +19,7 @@ object Main extends App with Logging {
   implicit val awsCredentials: AwsCredentials = CredentialsProvider.getAWSCredentials
   implicit val s3Client: S3Client = S3Connector.getS3Client(parsedArgs.ecsTaskDefinition)
   implicit val spark: SparkSession = SparkService.initializeSpark(jobContext,parsedArgs.ecsTaskDefinition)
+  implicit val sqsClient: SqsClient = SqsConnector.getSqsClient(parsedArgs.ecsTaskDefinition)
 
 
   try {

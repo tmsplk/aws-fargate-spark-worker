@@ -4,6 +4,13 @@ package object model {
 
   class EmptyDataFrameException(message: String) extends Exception(message)
 
+  object Job {
+    object JobStatus extends Enumeration {
+      type JobStatus = Value
+      val COMPLETED, RUNNING, FAILED, FAILED_OUTPUT_EMPTY = Value
+    }
+  }
+
   object JobType extends Enumeration {
     type Provider = Value
     val Preprocessing, Postprocesing = Value
