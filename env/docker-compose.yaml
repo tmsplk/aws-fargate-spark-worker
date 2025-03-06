@@ -5,9 +5,9 @@ services:
     image: localstack/localstack
     container_name: localstack
     environment:
-      - SERVICES=s3
-      - DEFAULT_REGION=us-east-1
-      - EDGE_PORT=4566
+      - SERVICES=s3,sqs,secretsmanager  # Ensure SQS is listed
+      - EAGER_SERVICE_LOADING=1  # Forces all services to start at container launch
+      - DEBUG=1  # Enable debug logging to check if services are failing
     ports:
       - "4566:4566"
     volumes:
