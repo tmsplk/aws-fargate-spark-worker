@@ -16,7 +16,7 @@ object S3Connector {
       lazy val s3Configuration = S3Configuration.builder()
         .pathStyleAccessEnabled(true)
         .build()
-      s3Builder.serviceConfiguration(s3Configuration).endpointOverride(URI.create("http://localhost:9300"))
+      s3Builder.serviceConfiguration(s3Configuration).endpointOverride(URI.create("http://localhost:4566"))
         .region(Region.US_EAST_1)
         .build()
     } else {

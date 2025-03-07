@@ -9,6 +9,9 @@ This repository contains a **Scala-based Apache Spark Worker** that interacts wi
 - **Dockerized Deployment**: Runs in a containerized environment.
 - **Local Testing with LocalStack**: Simulates AWS services using Docker Compose.
 - **Automated Initialization**: A script to start local services (`init_services.sh`).
+- **Parameterizable Execution**: Supports runtime arguments like `ecsTaskDefinition` for switching between LocalStack and AWS environments.
+- **SQS Message Handling**: Sends and retrieves messages from AWS SQS queues.
+- **AWS Credentials Management**: Dynamically retrieves credentials from AWS CLI, environment variables, or LocalStack.
 
 ---
 
@@ -60,6 +63,19 @@ spark-submit --class git.tmsplk.spark.worker.Main \
   target/scala-2.12/aws-fargate-spark-worker.jar
 ```
 
+To run the application locally with LocalStack:
+```bash
+sbt runMain git.tmsplk.spark.worker.Main \
+  --ecsTaskDefinition local \
+  --basePath test \
+  --jobId 17ed4792-de71-41f8-8da5-54ad71f2d246 \
+  --jobType Preprocessing \
+  --inputPath test \
+  --outputPath test \
+  --sqsQueue http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/test-queue \
+  --sparkCpu 4096 \
+  --sparkRam 15360
+```
 ---
 
 ## 🐳 Deploying with Docker

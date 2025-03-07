@@ -3,6 +3,7 @@ package git.tmsplk.spark.worker.aws
 import git.tmsplk.spark.worker.model.Job.JobStatus
 import git.tmsplk.spark.worker.model.JobContext.JobContext
 import grizzled.slf4j.Logging
+import software.amazon.awssdk.auth.credentials.{AwsCredentials, StaticCredentialsProvider}
 import software.amazon.awssdk.services.sqs.SqsClient
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest
 import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, RootJsonFormat}
@@ -33,7 +34,7 @@ object SqsConnector extends DefaultJsonProtocol with Logging {
     }
 
   implicit val statusFormat: RootJsonFormat[JobStatus.JobStatus] = enumFormat(JobStatus)
-  implicit val reportMessageJsonProtocol: RootJsonFormat[ReportMessage] = jsonFormat6(ReportMessage)
+  implicit val reportMessageJsonProtocol: RootJsonFormat[ReportMessage] = jsonFormat5(ReportMessage)
 
   def replyMessage(jobContext: JobContext, jobStatus: JobStatus.JobStatus, taskFailReason: Option[String] = None, stackTrace: Option[String] = None): String = {
     ReportMessage(
@@ -56,8 +57,8 @@ object SqsConnector extends DefaultJsonProtocol with Logging {
     sqs.sendMessage(sendMsgRequest)
   }
 
-  def getSqsClient(ecsTaskDefinition: String): SqsClient = {
-    val sqsBuilder = SqsClient.builder()
+  def getSqsClient(ecsTaskDefinition: String)(implicit awsCredentials: AwsCredentials): SqsClient = {
+    val sqsBuilder = SqsClient.builder().credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
 
     if (ecsTaskDefinition.contains("local")) {
       sqsBuilder.endpointOverride(URI.create("http://localhost:4566"))

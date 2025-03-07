@@ -48,7 +48,7 @@ object SparkService extends Logging {
     sparkConf.set("fs.s3a.path.style.access", "true")
 
     if (ecsTaskDefinition.contains("local")) {
-      sparkConf.set("fs.s3a.endpoint", "http://localhost:9300")
+      sparkConf.set("fs.s3a.endpoint", "http://localhost:4566")
       sparkConf.set("fs.s3a.signing-algorithm", "S3SignerType")
     } else {
       sparkConf.set("fs.s3a.acl.default", "BucketOwnerFullControl")
