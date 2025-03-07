@@ -32,11 +32,6 @@ object Main extends App with Logging {
       replyMessage(jobContext, JobStatus.RUNNING, None)
     )
     JobService.executeJob(jobContext)
-    sendResponse(
-      sqsClient,
-      jobContext.sqsQueue,
-      replyMessage(jobContext, JobStatus.COMPLETED, None)
-    )
     logger.info("[APP] Finished job")
   } catch {
     case e: EmptyDataFrameException =>
@@ -57,6 +52,11 @@ object Main extends App with Logging {
       throw e
   } finally {
     spark.stop()
+    sendResponse(
+      sqsClient,
+      jobContext.sqsQueue,
+      replyMessage(jobContext, JobStatus.COMPLETED, None)
+    )
   }
 }
 
