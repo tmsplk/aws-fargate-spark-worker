@@ -33,7 +33,7 @@ object SqsConnector extends DefaultJsonProtocol with Logging {
     }
 
   implicit val statusFormat: RootJsonFormat[JobStatus.JobStatus] = enumFormat(JobStatus)
-  implicit val reportMessageJsonProtocol: RootJsonFormat[ReportMessage] = jsonFormat6(ReportMessage)
+  implicit val reportMessageJsonProtocol: RootJsonFormat[ReportMessage] = jsonFormat5(ReportMessage)
 
   def replyMessage(jobContext: JobContext, jobStatus: JobStatus.JobStatus, taskFailReason: Option[String] = None, stackTrace: Option[String] = None): String = {
     ReportMessage(

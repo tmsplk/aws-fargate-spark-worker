@@ -16,7 +16,7 @@ object Main extends App with Logging {
   logger.info(parsedArgs.toString)
   private val jobContext = JobContext.resolve(parsedArgs)
 
-  implicit val awsCredentials: AwsCredentials = CredentialsProvider.getAWSCredentials
+  implicit val awsCredentials: AwsCredentials = CredentialsProvider.getAWSCredentials(parsedArgs.ecsTaskDefinition)
   implicit val s3Client: S3Client = S3Connector.getS3Client(parsedArgs.ecsTaskDefinition)
   implicit val spark: SparkSession = SparkService.initializeSpark(jobContext,parsedArgs.ecsTaskDefinition)
   implicit val sqsClient: SqsClient = SqsConnector.getSqsClient(parsedArgs.ecsTaskDefinition)
