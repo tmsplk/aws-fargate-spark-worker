@@ -22,7 +22,8 @@ lazy val commonSettings = Seq(
     "org.apache.spark" %% "spark-core" % sparkVersion,
     "org.apache.spark" %% "spark-sql" % sparkVersion,
     "org.postgresql" % "postgresql" % "42.7.5",
-    "org.mongodb.spark" %% "mongo-spark-connector" % "10.4.1"
+    "org.mongodb.spark" %% "mongo-spark-connector" % "10.4.1",
+    "io.spray" %% "spray-json" % "1.3.6"
   )
 )
 
