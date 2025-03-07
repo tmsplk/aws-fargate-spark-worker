@@ -1,7 +1,7 @@
 package git.tmsplk.spark.worker
 
 import git.tmsplk.spark.worker.aws.SqsConnector.{replyMessage, sendResponse}
-import git.tmsplk.spark.worker.aws.{CredentialsProvider, S3Connector, SqsConnector}
+import git.tmsplk.spark.worker.aws.{CredentialsProvider, S3Connector, SMConnector, SqsConnector}
 import git.tmsplk.spark.worker.model.Job.JobStatus
 import git.tmsplk.spark.worker.model._
 import git.tmsplk.spark.worker.services.JobService
@@ -10,7 +10,10 @@ import grizzled.slf4j.Logging
 import org.apache.spark.sql.SparkSession
 import software.amazon.awssdk.auth.credentials.AwsCredentials
 import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.sqs.SqsClient
+
+import java.util.Properties
 
 object Main extends App with Logging {
 
@@ -20,6 +23,9 @@ object Main extends App with Logging {
 
   implicit val awsCredentials: AwsCredentials = CredentialsProvider.getAWSCredentials(parsedArgs.ecsTaskDefinition)
   implicit val s3Client: S3Client = S3Connector.getS3Client(parsedArgs.ecsTaskDefinition)
+  implicit val secretsManagerClient: SecretsManagerClient = SMConnector.getSecretsManagerClient(parsedArgs.ecsTaskDefinition)
+  implicit val mongoConfig: String = CredentialsProvider.getMongoConfig("mongo-uri")
+  implicit val postgresConfig: Properties = CredentialsProvider.getPostgresConfig("postgres-config")
   implicit val spark: SparkSession = SparkService.initializeSpark(jobContext,parsedArgs.ecsTaskDefinition)
   implicit val sqsClient: SqsClient = SqsConnector.getSqsClient(parsedArgs.ecsTaskDefinition)
 

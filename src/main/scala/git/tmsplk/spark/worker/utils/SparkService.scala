@@ -4,13 +4,15 @@ import git.tmsplk.spark.worker.model.DataFormat
 import git.tmsplk.spark.worker.model.DataFormat.DataFormat
 import git.tmsplk.spark.worker.model.JobContext.JobContext
 import grizzled.slf4j.Logging
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import software.amazon.awssdk.auth.credentials.{AwsCredentials, AwsSessionCredentials}
 import software.amazon.awssdk.services.s3.S3Client
 
+import java.util.Properties
+
 object SparkService extends Logging {
 
-  def initializeSpark(jobContext: JobContext, ecsTaskDefinition: String)(implicit awsCredentials: AwsCredentials): SparkSession = {
+  def initializeSpark(jobContext: JobContext, ecsTaskDefinition: String)(implicit awsCredentials: AwsCredentials, mongoConfig: String): SparkSession = {
 
     val defaultSparkCpu = "4096"
     val defaultSparkRam = "30720"
@@ -19,13 +21,15 @@ object SparkService extends Logging {
     val sparkRamConfig = s"${jobContext.sparkContext.map(_.ram).getOrElse(defaultSparkRam).toInt / 1024}g"
 
     val sparkBuilder = SparkSession.builder()
-      .appName("SupplyChain")
+      .appName("aws-fargate-spark-worker")
       .master(s"local[$sparkCpuConfig]")
       .config("spark.driver.memory", s"$sparkRamConfig")
       .config("com.amazonaws.services.s3.enableV4", "true")
       .config("spark.sql.sources.partitionColumnTypeInference.enabled", "false") // pass integer partitions to output as they are
       .config("spark.sql.sources.partitionOverwriteMode", "dynamic") // overwrite just recomputed partitions
       .config("spark.hadoop.native.lib", "false") // ignore missing hadoop libs
+      .config("spark.mongodb.input.uri", mongoConfig)
+      .config("spark.mongodb.output.uri", mongoConfig)
 
     val spark = sparkBuilder.getOrCreate()
 
@@ -58,6 +62,16 @@ object SparkService extends Logging {
     spark
   }
 
+  def readDataFromPostgres(connectionProperties: Properties, query: String)(implicit spark: SparkSession): DataFrame = {
+    val df = spark.read.jdbc(connectionProperties.getProperty("url"), query, connectionProperties)
+
+    if (df.isEmpty) {
+      throw new IllegalArgumentException(s"No data read using query: $query")
+    } else {
+      df
+    }
+  }
+
   def readDataFromS3(basePath: String, inputPath: String, dataFormat: DataFormat)
                     (implicit s3client: S3Client, spark: SparkSession): DataFrame = {
 
@@ -87,5 +101,33 @@ object SparkService extends Logging {
         case _ =>
           throw new IllegalArgumentException(s"Unsupported data type: $dataFormat")
       }
+  }
+
+  def saveDataToS3(df: DataFrame, outputPath: String, saveMode: SaveMode): Unit = {
+    logger.info(s"[APP] Started saving data to S3 path: $outputPath")
+    try {
+      df
+        .persist()
+        .coalesce(1)
+        .write
+        .format("parquet")
+        .mode(saveMode)
+        .option("multiline", "false")
+        .option("fs.s3a.acl.default", "BucketOwnerFullControl")
+        .option("fs.s3a.canned.acl", "BucketOwnerFullControl")
+        .option("fs.s3a.committer.name", "file")
+        .option("fs.s3a.fast.upload", "true")
+        .option("fs.s3a.fast.upload.buffer", "bytebuffer")
+        .option("fs.s3a.committer.staging.conflict-mode", "replace")
+        .save(outputPath)
+
+      logger.info(s"[APP] Successfully saved ${df.count()} rows to S3 at $outputPath")
+    } catch {
+      case e: Exception =>
+        logger.error(s"[APP] Failed to save data to S3 at $outputPath", e)
+        throw e
+    }
+
+    logger.info(df.limit(5).collect().mkString("\n"))
   }
 }

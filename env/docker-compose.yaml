@@ -5,9 +5,9 @@ services:
     image: localstack/localstack
     container_name: localstack
     environment:
-      - SERVICES=s3,sqs,secretsmanager  # Ensure SQS is listed
+      - SERVICES=s3,sqs,secretsmanager
       - EAGER_SERVICE_LOADING=1  # Forces all services to start at container launch
-      - DEBUG=1  # Enable debug logging to check if services are failing
+      - DEBUG=1
     ports:
       - "4566:4566"
     volumes:
@@ -21,6 +21,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
 
   postgres:
     image: postgres:latest
