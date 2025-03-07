@@ -13,7 +13,8 @@ object ArgumentsParser {
     inputPath: String = "",
     outputPath: String = "",
     sparkCpu: Option[String] = None,
-    sparkRam: Option[String] = None
+    sparkRam: Option[String] = None,
+    sqsQueue: String = ""
   ) {
     override def toString: String = {
       val fields = this.getClass.getDeclaredFields
@@ -42,6 +43,7 @@ object ArgumentsParser {
       opt[String]("outputPath").required().action((x, c) => c.copy(outputPath = x)),
       opt[String]("sparkCpu").optional().action((x, c) => c.copy(sparkCpu = Some(x))),
       opt[String]("sparkRam").optional().action((x, c) => c.copy(sparkRam = Some(x))),
+      opt[String]("sqsQueue").required().action((x, c) => c.copy(sqsQueue = x)),
     )
   }
 

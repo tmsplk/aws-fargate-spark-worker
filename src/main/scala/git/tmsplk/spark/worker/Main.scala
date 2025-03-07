@@ -1,6 +1,8 @@
 package git.tmsplk.spark.worker
 
+import git.tmsplk.spark.worker.aws.SqsConnector.{replyMessage, sendResponse}
 import git.tmsplk.spark.worker.aws.{CredentialsProvider, S3Connector, SqsConnector}
+import git.tmsplk.spark.worker.model.Job.JobStatus
 import git.tmsplk.spark.worker.model._
 import git.tmsplk.spark.worker.services.JobService
 import git.tmsplk.spark.worker.utils.{ArgumentsParser, SparkService}
@@ -24,14 +26,34 @@ object Main extends App with Logging {
 
   try {
     logger.info(s"[APP] Starting job with ECS definition: ${jobContext.ecsTaskDefinition}")
+    sendResponse(
+      sqsClient,
+      jobContext.sqsQueue,
+      replyMessage(jobContext, JobStatus.RUNNING, None)
+    )
     JobService.executeJob(jobContext)
+    sendResponse(
+      sqsClient,
+      jobContext.sqsQueue,
+      replyMessage(jobContext, JobStatus.COMPLETED, None)
+    )
     logger.info("[APP] Finished job")
   } catch {
     case e: EmptyDataFrameException =>
       logger.error(s"[APP] Failed processing on: DataFrame is empty", e)
+      sendResponse(
+        sqsClient,
+        jobContext.sqsQueue,
+        replyMessage(jobContext, JobStatus.FAILED_OUTPUT_EMPTY, Some(e.getMessage), Some(e.getStackTrace.take(10).mkString("\n")))
+      )
       throw e
     case e: Throwable =>
       logger.error(s"[APP] Failed processing on: ", e)
+      sendResponse(
+        sqsClient,
+        jobContext.sqsQueue,
+        replyMessage(jobContext, JobStatus.FAILED, Some(e.getMessage), Some(e.getStackTrace.take(10).mkString("\n")))
+      )
       throw e
   } finally {
     spark.stop()
