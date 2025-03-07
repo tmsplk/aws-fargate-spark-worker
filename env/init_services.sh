@@ -52,7 +52,7 @@ echo "Creating a test S3 bucket..."
 aws --endpoint-url=http://localhost:4566 s3 mb s3://test-bucket || true
 
 echo "Creating a test secret in Secrets Manager..."
-aws --endpoint-url=http://localhost:4566 secretsmanager create-secret --name mongo-uri --secret-string '{"uri":"mongodb://localhost:27017"}' || true
+aws --endpoint-url=http://localhost:4566 secretsmanager create-secret --name mongo-uri --secret-string '{"uri":"mongodb://localhost:27017/testdb.testcollection?maxPoolSize=20&minPoolSize=1"}' || true
 aws --endpoint-url=http://localhost:4566 secretsmanager create-secret --name postgres-config --secret-string '{"user":"admin", "pass":"admin", "url":"jdbc:postgresql://localhost:5432/testdb"}' || true
 
 # Ensure each AWS service is ready before making AWS CLI requests

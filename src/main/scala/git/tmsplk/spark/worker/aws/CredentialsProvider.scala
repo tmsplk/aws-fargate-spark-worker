@@ -2,7 +2,6 @@ package git.tmsplk.spark.worker.aws
 
 import grizzled.slf4j.Logging
 import software.amazon.awssdk.auth.credentials.{AwsBasicCredentials, AwsCredentials, DefaultCredentialsProvider, ProfileCredentialsProvider, StaticCredentialsProvider}
-import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
 import spray.json._
