@@ -16,7 +16,7 @@ object JobContext {
 
   case class SparkContext(cpu: String, ram: String)
 
-  case class PreprocessingJobContext(
+  case class RawDataIngestJobContext(
      override val ecsTaskDefinition: String,
      override val jobId: UUID,
      override val outputPath: String,
@@ -26,7 +26,7 @@ object JobContext {
      inputPath: String
   ) extends JobContext(ecsTaskDefinition, jobId, outputPath, sparkContext, sqsQueue)
 
-  case class PostprocessingJobContext(
+  case class CleanDataIngestJobContext(
      override val ecsTaskDefinition: String,
      override val jobId: UUID,
      override val outputPath: String,
@@ -38,8 +38,8 @@ object JobContext {
 
   def resolve(parsedFlatArgs: Arguments): JobContext = {
     JobType.fromString(parsedFlatArgs.jobType) match {
-      case JobType.Preprocessing =>
-        PreprocessingJobContext(
+      case JobType.rawDataIngest =>
+        RawDataIngestJobContext(
           parsedFlatArgs.ecsTaskDefinition,
           UUID.fromString(parsedFlatArgs.jobId),
           parsedFlatArgs.outputPath,
@@ -48,8 +48,8 @@ object JobContext {
           parsedFlatArgs.basePath,
           parsedFlatArgs.inputPath
         )
-      case JobType.Postprocesing =>
-        PostprocessingJobContext(
+      case JobType.cleanDataIngest =>
+        CleanDataIngestJobContext(
           parsedFlatArgs.ecsTaskDefinition,
           UUID.fromString(parsedFlatArgs.jobId),
           parsedFlatArgs.outputPath,

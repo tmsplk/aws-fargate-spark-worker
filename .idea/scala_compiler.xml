@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="aws-fargate-spark-worker_432,aws-fargate-spark-worker_432.main,aws-fargate-spark-worker_432.test" />
+    <option name="separateProdTestSources" value="true" />
+    <profile name="sbt 1" modules="aws-fargate-spark-worker_432,aws-fargate-spark-worker_432.main,aws-fargate-spark-worker_432.test,root,root.main,root.test" />
   </component>
 </project>
