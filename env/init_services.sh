@@ -77,4 +77,22 @@ wait_for_service "s3api"
 wait_for_service "sqs"
 wait_for_service "secretsmanager"
 
+upload_data_to_s3() {
+    LOCAL_FOLDER="../data/raw"
+    S3_BUCKET="s3://test-bucket/raw"
+
+    echo "Uploading data from $LOCAL_FOLDER to $S3_BUCKET..."
+
+    # Ensure the S3 bucket exists
+    aws --endpoint-url=http://localhost:4566 s3 ls "$S3_BUCKET" >/dev/null 2>&1 || \
+    aws --endpoint-url=http://localhost:4566 s3 mb "$S3_BUCKET"
+
+    # Upload all files from local folder to S3
+    aws --endpoint-url=http://localhost:4566 s3 cp "$LOCAL_FOLDER" "$S3_BUCKET" --recursive
+
+    echo "✅ Data successfully uploaded to $S3_BUCKET!"
+}
+
+upload_data_to_s3
+
 echo "✅ All services initialized successfully!"

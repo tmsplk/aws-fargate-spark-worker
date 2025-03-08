@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f08a3c6-3fa7-40ac-bf9e-372f1821438d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/scala_compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/model/JobContext.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/model/JobContext.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/model/package.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/model/package.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/services/JobService.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/services/JobService.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/services/postprocessing/PostprocessingService.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/services/cleanDataIngest/CleanDataIngestService.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/services/preprocessing/PreprocessingService.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/services/rawDataIngest/RawDataIngestService.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/init_services.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env/init_services.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +66,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1741457208072</updated>
-      <workItem from="1741457209187" duration="835000" />
+      <workItem from="1741457209187" duration="1510000" />
     </task>
     <servers />
   </component>
