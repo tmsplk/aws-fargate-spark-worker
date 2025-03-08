@@ -21,7 +21,7 @@ object CleanDataIngestService extends Logging {
   private def transformRawData(df: DataFrame): DataFrame = {
     // transformations applied to raw data
     val cleanDataTransformations = (df: DataFrame) => df.select(
-      to_date(col("date")).cast("date"),
+      to_date(col("date")).cast("date").alias("date"),
       col("hour").cast("int"),
       col("symbol"),
       col("underlying"),

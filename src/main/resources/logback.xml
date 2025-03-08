@@ -3,7 +3,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator>
-                <expression>logger.matches("com.flywheel.sc.preprocessor.*") || (level > INFO)</expression>
+                <expression>logger.matches("git.tmsplk.spark.worker.*") || (level > INFO)</expression>
             </evaluator>
             <OnMismatch>DENY</OnMismatch>
             <OnMatch>NEUTRAL</OnMatch>
