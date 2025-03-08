@@ -78,8 +78,8 @@ wait_for_service "sqs"
 wait_for_service "secretsmanager"
 
 upload_data_to_s3() {
-    LOCAL_FOLDER="../data/raw"
-    S3_BUCKET="s3://test-bucket/raw"
+    LOCAL_FOLDER="../data/source"
+    S3_BUCKET="s3://test-bucket/source"
 
     echo "Uploading data from $LOCAL_FOLDER to $S3_BUCKET..."
 
