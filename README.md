@@ -22,7 +22,6 @@ aws-fargate-spark-worker-main
 │   ├── Main.scala                             # Application entry point
 │   ├── aws/CredentialsProvider.scala         # AWS credentials handling
 ├── src/main/resources/                        # Configuration files
-│   ├── application.conf                       # Application settings
 │   ├── logback.xml                            # Logging configuration
 ├── env/                                       # Environment setup
 │   ├── docker-compose.yaml                    # Local testing environment
@@ -50,28 +49,38 @@ cd env/
 docker-compose up -d
 ./init_services.sh  # Wait for services to initialize
 ```
+#### Once done you can use ```./end_services.sh``` to erase the provisioned services
 
 ### 3️⃣ Build & Run the Spark Worker
 ```bash
 sbt compile
 sbt assembly  # Creates a fat JAR
 ```
-To run the application:
-```bash
-spark-submit --class git.tmsplk.spark.worker.Main \
-  --master local[*] \
-  target/scala-2.12/aws-fargate-spark-worker.jar
-```
 
-To run the application locally with LocalStack:
+To run the application locally with LocalStack and rawDataIngest:
 ```bash
 sbt runMain git.tmsplk.spark.worker.Main \
   --ecsTaskDefinition local \
-  --basePath test \
+  --basePath "s3a://test-bucket/source/" \
   --jobId 17ed4792-de71-41f8-8da5-54ad71f2d246 \
-  --jobType Preprocessing \
-  --inputPath test \
-  --outputPath test \
+  --jobType rawDataIngest \
+  --inputPath "s3a://test-bucket/source/*.csv" \
+  --outputPath "s3a://test-bucket/raw/" \
+  --sqsQueue http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/test-queue \
+  --sparkCpu 4096 \
+  --sparkRam 15360
+```
+---
+
+To run the application locally with LocalStack and cleanDataIngest:
+```bash
+sbt runMain git.tmsplk.spark.worker.Main \
+  --ecsTaskDefinition local \
+  --basePath "s3a://test-bucket/raw/" \
+  --jobId 17ed4792-de71-41f8-8da5-54ad71f2d246 \
+  --jobType cleanDataIngest \
+  --inputPath "s3a://test-bucket/raw/*.csv" \
+  --outputPath "s3a://test-bucket/clean/" \
   --sqsQueue http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/test-queue \
   --sparkCpu 4096 \
   --sparkRam 15360

@@ -6,13 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="1f08a3c6-3fa7-40ac-bf9e-372f1821438d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/raw/BTCUSDT-EOHSummary-2023-10-20.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/source/BTCUSDT-EOHSummary-2023-10-20.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/raw/BTCUSDT-EOHSummary-2023-10-21.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/source/BTCUSDT-EOHSummary-2023-10-21.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/raw/BTCUSDT-EOHSummary-2023-10-22.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/source/BTCUSDT-EOHSummary-2023-10-22.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/raw/BTCUSDT-EOHSummary-2023-10-23.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/source/BTCUSDT-EOHSummary-2023-10-23.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/init_services.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env/init_services.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/services/rawDataIngest/RawDataIngestService.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/services/rawDataIngest/RawDataIngestService.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/utils/SparkService.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/utils/SparkService.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/services/cleanDataIngest/CleanDataIngestService.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/git/tmsplk/spark/worker/services/cleanDataIngest/CleanDataIngestService.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,16 +23,16 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2u2qqX4GpNHcfquLBvGUd5prqSi" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -47,7 +43,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "rawIngest",
+    "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
