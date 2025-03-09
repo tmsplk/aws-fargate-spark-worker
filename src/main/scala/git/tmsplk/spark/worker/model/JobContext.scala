@@ -11,7 +11,7 @@ object JobContext {
     val jobId: UUID,
     val outputPath: String,
     val sparkContext: Option[SparkContext],
-    val sqsQueue: String
+    val sqsQueue: String,
   )
 
   case class SparkContext(cpu: String, ram: String)
@@ -36,6 +36,14 @@ object JobContext {
      inputPath: String
   ) extends JobContext(ecsTaskDefinition, jobId, outputPath, sparkContext, sqsQueue)
 
+  case class CuratedDataIngestJobContext(
+    override val ecsTaskDefinition: String,
+    override val jobId: UUID,
+    override val outputPath: String,
+    override val sparkContext: Option[SparkContext],
+    override val sqsQueue: String
+  ) extends JobContext(ecsTaskDefinition, jobId, outputPath, sparkContext, sqsQueue)
+
   def resolve(parsedFlatArgs: Arguments): JobContext = {
     JobType.fromString(parsedFlatArgs.jobType) match {
       case JobType.rawDataIngest =>
@@ -57,6 +65,14 @@ object JobContext {
           parsedFlatArgs.sqsQueue,
           parsedFlatArgs.basePath,
           parsedFlatArgs.inputPath
+        )
+      case JobType.curatedDataIngest =>
+        CuratedDataIngestJobContext(
+          parsedFlatArgs.ecsTaskDefinition,
+          UUID.fromString(parsedFlatArgs.jobId),
+          parsedFlatArgs.outputPath,
+          sparkContext = resolveSparkContext(parsedFlatArgs),
+          parsedFlatArgs.sqsQueue
         )
     }
   }
