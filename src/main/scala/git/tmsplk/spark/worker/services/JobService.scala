@@ -1,7 +1,8 @@
 package git.tmsplk.spark.worker.services
 
-import git.tmsplk.spark.worker.model.JobContext.{CleanDataIngestJobContext, JobContext, RawDataIngestJobContext}
+import git.tmsplk.spark.worker.model.JobContext.{CleanDataIngestJobContext, CuratedDataIngestJobContext, JobContext, RawDataIngestJobContext}
 import git.tmsplk.spark.worker.services.cleanDataIngest.CleanDataIngestService
+import git.tmsplk.spark.worker.services.curatedDataIngest.CuratedDataIngestService
 import git.tmsplk.spark.worker.services.rawDataIngest.RawDataIngestService
 import grizzled.slf4j.Logging
 import org.apache.spark.sql.SparkSession
@@ -15,6 +16,7 @@ object JobService extends Logging {
     jobContext match {
       case rawDataIngestJobContext: RawDataIngestJobContext => RawDataIngestService.ingestRawData(rawDataIngestJobContext)
       case cleanDataIngestJobContext: CleanDataIngestJobContext => CleanDataIngestService.ingestCleanData(cleanDataIngestJobContext)
+      case curatedDataIngestJobContext: CuratedDataIngestJobContext => CuratedDataIngestService.ingestCuratedData(curatedDataIngestJobContext)
       case other => throw new NoSuchElementException(s"[APP] Unknown job typ: $other")
     }
   }

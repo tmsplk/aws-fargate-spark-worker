@@ -19,9 +19,7 @@ object CleanDataIngestService extends Logging {
 
     saveDataToS3(transformedDf, jobContext.outputPath, SaveMode.Overwrite)
 
-    val postgresDf = preparePostgresData(transformedDf)
-
-    saveDataToPostgres(postgresConfig, postgresDf, "clean_output")
+    saveDataToPostgres(postgresConfig, transformedDf, "clean_output")
   }
 
   private def transformRawData(df: DataFrame): DataFrame = {
@@ -56,20 +54,5 @@ object CleanDataIngestService extends Logging {
     )
 
     df.transform(cleanDataTransformations).distinct()
-  }
-
-  private def preparePostgresData(df: DataFrame): DataFrame = {
-    df.select(
-      col("date"),
-      col("hour"),
-      col("symbol"),
-      col("underlying"),
-      col("type"),
-      col("strike"),
-      col("open"),
-      col("high"),
-      col("low"),
-      col("close")
-    )
   }
 }

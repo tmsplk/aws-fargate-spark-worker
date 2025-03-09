@@ -13,7 +13,7 @@ package object model {
 
   object JobType extends Enumeration {
     type Provider = Value
-    val rawDataIngest, cleanDataIngest = Value
+    val rawDataIngest, cleanDataIngest, curatedDataIngest = Value
 
     def fromString(string: String): Provider =
       values.find(_.toString == string)

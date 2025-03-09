@@ -61,6 +61,36 @@ object SparkService extends Logging {
     spark
   }
 
+  def readDataFromMongo(spark: SparkSession): DataFrame = {
+    val df = spark.read.format("com.mongodb.spark.sql.DefaultSource").load().persist()
+
+    if (df.isEmpty) {
+      throw new IllegalArgumentException(s"No data read from MongoDb")
+    } else {
+      df
+    }
+  }
+
+  def saveDataToMongo(df: DataFrame, shardKey: String, jobContext: JobContext)(implicit spark: SparkSession): Unit = {
+    try {
+      df
+        .persist()
+        .write
+        .format("mongodb")
+        .mode(SaveMode.Append)
+        .option("database", "testdb")
+        .option("collection", "curated_output")
+        .option("replaceDocument", "false")
+        .option("shardKey", shardKey)
+        .option("maxBatchSize", "25000")
+        .save()
+    } catch {
+      case e: Exception =>
+        logger.error(s"[APP] Failed to save data to Mongo DB", e)
+        throw e
+    }
+  }
+
   def readDataFromPostgres(connectionProperties: Properties, query: String)(implicit spark: SparkSession): DataFrame = {
     val df = spark.read.jdbc(connectionProperties.getProperty("url"), query, connectionProperties)
 
