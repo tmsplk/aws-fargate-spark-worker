@@ -2,20 +2,26 @@ package git.tmsplk.spark.worker.services.cleanDataIngest
 
 import git.tmsplk.spark.worker.model.DataFormat
 import git.tmsplk.spark.worker.model.JobContext.CleanDataIngestJobContext
-import git.tmsplk.spark.worker.utils.SparkService.{readDataFromS3, saveDataToS3}
+import git.tmsplk.spark.worker.utils.SparkService.{readDataFromS3, saveDataToPostgres, saveDataToS3}
 import grizzled.slf4j.Logging
 import org.apache.spark.sql.functions.{col, to_date}
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import software.amazon.awssdk.services.s3.S3Client
 
+import java.util.Properties
+
 object CleanDataIngestService extends Logging {
 
-  def ingestCleanData(jobContext: CleanDataIngestJobContext)(implicit s3client: S3Client, spark: SparkSession): Unit = {
+  def ingestCleanData(jobContext: CleanDataIngestJobContext)(implicit postgresConfig: Properties, s3client: S3Client, spark: SparkSession): Unit = {
     val df = readDataFromS3(jobContext.basePath, jobContext.inputPath, DataFormat.Parquet)
 
     val transformedDf = transformRawData(df)
 
     saveDataToS3(transformedDf, jobContext.outputPath, SaveMode.Overwrite)
+
+    val postgresDf = preparePostgresData(transformedDf)
+
+    saveDataToPostgres(postgresConfig, postgresDf, "clean_output")
   }
 
   private def transformRawData(df: DataFrame): DataFrame = {
@@ -50,5 +56,20 @@ object CleanDataIngestService extends Logging {
     )
 
     df.transform(cleanDataTransformations).distinct()
+  }
+
+  private def preparePostgresData(df: DataFrame): DataFrame = {
+    df.select(
+      col("date"),
+      col("hour"),
+      col("symbol"),
+      col("underlying"),
+      col("type"),
+      col("strike"),
+      col("open"),
+      col("high"),
+      col("low"),
+      col("close")
+    )
   }
 }

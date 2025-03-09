@@ -71,6 +71,24 @@ object SparkService extends Logging {
     }
   }
 
+  def saveDataToPostgres(connectionProperties: Properties, df: DataFrame, tableName: String)(implicit spark: SparkSession): Unit = {
+    try {
+      df.write
+        .format("jdbc")
+        .option("url", connectionProperties.getProperty("url"))
+        .option("dbtable", tableName)
+        .option("user", connectionProperties.getProperty("user"))
+        .option("password", connectionProperties.getProperty("password"))
+        .option("driver", "org.postgresql.Driver")
+        .mode(SaveMode.Append)
+        .save()
+    } catch {
+    case e: Exception =>
+      logger.error(s"[APP] Failed to save data to Postgres table: $tableName", e)
+      throw e
+    }
+  }
+
   def readDataFromS3(basePath: String, inputPath: String, dataFormat: DataFormat)
                     (implicit s3client: S3Client, spark: SparkSession): DataFrame = {
 
